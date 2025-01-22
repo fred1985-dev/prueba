@@ -24,8 +24,9 @@ public class SpringSecurityConfig {
         http
             .authorizeRequests()
             .requestMatchers("/login**", "/oauth2/authorization/**").permitAll()  // Permite acceso a login y OAuth2
-            .anyRequest().authenticated()  // Requiere autenticación para cualquier otra solicitud
+            //.anyRequest().authenticated()  // Requiere autenticación para cualquier otra solicitud
             .and()
+            
             .oauth2Login();  // Habilita OAuth2 para el login
 
         return http.build();  // Construye la configuración de seguridad

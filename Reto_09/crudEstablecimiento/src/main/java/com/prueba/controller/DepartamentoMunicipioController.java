@@ -1,6 +1,7 @@
 package com.prueba.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import com.prueba.model.Departamento;
@@ -26,7 +27,7 @@ public class DepartamentoMunicipioController {
         List<Departamento> departamentos = departamentoService.getAllDepartamentos();
         return ApiResponse.success("Lista de departamentos obtenida con éxito", departamentos);
     }
-
+	
     @GetMapping("/municipios")
     public ApiResponse<List<Municipio>> getMunicipios() {
         List<Municipio> municipios = municipioService.getAllMunicipios();

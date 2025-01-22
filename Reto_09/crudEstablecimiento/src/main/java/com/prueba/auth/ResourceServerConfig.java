@@ -15,7 +15,7 @@ public class ResourceServerConfig {
         http
             .authorizeRequests()
             .requestMatchers("/public/**").permitAll()
-            .anyRequest().authenticated()
+            //.anyRequest().authenticated()
             .and()
             .oauth2ResourceServer()
             .jwt();

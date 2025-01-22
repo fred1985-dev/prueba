@@ -1,5 +1,7 @@
 package com.prueba.model;
 
+import java.io.Serializable;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -7,32 +9,37 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
-import java.util.Date;
 
-@Entity
+
 @Data
+@Entity
 @Table(name = "DEPARTAMENTO")
-public class Departamento {
+public class Departamento implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "S_DEPARTAMENTO")
-    @SequenceGenerator(name = "S_DEPARTAMENTO", sequenceName = "S_DEPARTAMENTO", allocationSize = 1)
-    @Column(name = "DEPARTAMENTO_ID")
-    private Long id;
+	private static final long serialVersionUID = -8563574556412347549L;
 
-    @Column(name = "NOMBRE_DEPARTAMENTO", nullable = false)
-    private String nombreDepartamento;
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "s_basidprtmnto")
+	@SequenceGenerator(name = "s_departamento", sequenceName = "s_departamento", allocationSize = 1)
+	private Long departamento_id;
 
-    @Column(name = "CREATED_AT", nullable = false)
-    private Date createdAt;
+	@NotEmpty(message = "No puede estar vacio")
+	@Size(min = 4, max = 12, message = "El tamaño tiene que estar entre 4 y 12")
+	@Column(name = "nombre_departamento")
+	private String nombre_departamento;
 
-    @Column(name = "UPDATED_AT", nullable = false)
-    private Date updatedAt;
+	@Column(name = "created_at")
+	private java.util.Date createdAt;
 
-    @Column(name = "USUARIO", nullable = false)
+	@Column(name = "updated_at")
+	private java.util.Date updatedAt;
+
+
+    @Column(name = "usuario", nullable = false, length = 100)
     private String usuario;
-
-
+	
 }
