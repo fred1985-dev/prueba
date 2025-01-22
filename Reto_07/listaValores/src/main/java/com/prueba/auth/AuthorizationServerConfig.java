@@ -27,8 +27,10 @@ public class AuthorizationServerConfig {
                 .scope("write")
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                .redirectUri("http://localhost:8080/login/oauth2/code/client")
+                .redirectUri("http://localhost:8090/login/oauth2/code/client")
                 .build();
+        
+        System.out.println("REFRESH_TOKEN....."+ AuthorizationGrantType.REFRESH_TOKEN);
         return new InMemoryRegisteredClientRepository(registeredClient);
     }
 

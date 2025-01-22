@@ -36,7 +36,6 @@ public class Users implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO, generator="native")
-	//@GenericGenerator(name="native",strategy="native")
 	@SequenceGenerator(name="s_user", sequenceName="s_user",allocationSize=1)
 	private Long id_user;
 	

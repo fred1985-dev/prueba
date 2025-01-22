@@ -9,7 +9,7 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-    private static final String SECRET_KEY = "1985"; // Cambia esto por una clave más segura
+    private static final String SECRET_KEY = "admin"; // Cambia esto por una clave más segura
 
     public String generateToken(String username) {
         Date now = new Date();

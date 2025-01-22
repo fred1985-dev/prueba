@@ -31,10 +31,10 @@ public class AuthController {
         if (user != null && passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
         	String role = user.getRoles().stream()
                     .findFirst()  // Obtiene el primer rol (si existe)
-                    .map(r -> r.getRole().getName())  // Cambié el parámetro a 'r' para evitar el conflicto
+                    .map(r -> r.getRole().getName())  
                     .orElse("ROLE_USER");
             // Generamos el token con la información del usuario
-            String token = jwtTokenProvider.generateToken(user.getUsername());  // Llamada al método getUsername()
+            String token = jwtTokenProvider.generateToken(user.getUsername());  
             
             // Retornar el token en la respuesta
             return ResponseEntity.ok(new JwtResponse(token));
