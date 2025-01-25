@@ -153,19 +153,6 @@ public class Users implements Serializable {
 	uniqueConstraints= {@UniqueConstraint(columnNames= {"id_user", "id"})})
 	private List<UserRole> roles;
 	
-	
-	
-	/*
-	public List<Role> getRoles() {
-		return roles;
-	}
-
-	public void setRoles(List<Role> roles) {
-		this.roles = roles;
-	}
-	*/
-	
-	
 
 
 	public List<UserRole> getRoles() {

@@ -23,6 +23,6 @@ public class UsuarioServiceImpl implements IUsuarioService {
 
     @Override
     public Object findByEmail(String email) {
-        return userRepository.findByEmail(email);
+        return userRepository.findByEmailCustom(email);
     }
 }

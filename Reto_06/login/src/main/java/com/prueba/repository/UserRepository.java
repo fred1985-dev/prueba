@@ -18,11 +18,8 @@ import java.util.Set;
   
   public Iterable<Users>  findAllByActivo(Character activo);
   
-  @Query(" select u from Users u where u.username=?1")
-  public Users findByUsernameDos(String username);
+  @Query("select u from Users u where u.email = ?1")
+  public Users findByEmailCustom(String email);
   
-  
-  // Agregar el método findByEmail
-  Users findByEmail(String email);
 
 }

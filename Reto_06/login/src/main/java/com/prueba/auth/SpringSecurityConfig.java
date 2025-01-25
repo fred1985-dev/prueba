@@ -16,18 +16,16 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import com.prueba.service.UserDetailsServiceImpl;
 
+import jakarta.servlet.http.HttpServletResponse;
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SpringSecurityConfig {
 
     private final UserDetailsService userDetailsService;
 
-    private final BCryptPasswordEncoder passwordEncoder;
-    
     public SpringSecurityConfig(UserDetailsServiceImpl userDetailsServiceImpl) {
         this.userDetailsService = userDetailsServiceImpl;
-		this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
     @Bean
@@ -46,11 +44,18 @@ public class SpringSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(authorize -> authorize
-                .anyRequest().authenticated()
-        )
-        .csrf(csrf -> csrf.disable())
-        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        http
+            .csrf(csrf -> csrf.disable()) // Desactivar CSRF para APIs REST
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api/auth/login", "/api/auth/register").permitAll() // Permitir acceso al login y registro
+                .anyRequest().authenticated() // Bloquear cualquier otro acceso no autenticado
+            )
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Política sin estado (JWT)
+            .exceptionHandling(exception -> exception
+                .authenticationEntryPoint((request, response, authException) -> 
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized")
+                )
+            );
 
         return http.build();
     }

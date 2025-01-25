@@ -25,8 +25,9 @@ import org.springframework.stereotype.Service;
 import com.prueba.model.Users;
 import com.prueba.repository.UserRepository;
 
-@Service
+
 @Primary
+@Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
@@ -37,15 +38,24 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Users user = userRepository.findByEmail(email);
-        System.out.println(user.getEmail());
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found");
+        // Verifica si el email es nulo o vacío antes de intentar buscarlo en la base de datos
+        if (email == null || email.isEmpty()) {
+            throw new UsernameNotFoundException("Email is empty or null");
         }
+
+        // Busca el usuario por su email
+        Users user = userRepository.findByEmailCustom(email);
+
+        // Verifica si el usuario fue encontrado
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found with email: " + email);
+        }
+
+        // Si todo está bien, crea y devuelve el UserDetails
         return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),
+                user.getEmail(), // Aquí usas el email
                 user.getPassword(),
-                new ArrayList<>()
-            );
+                new ArrayList<>() // Roles o permisos pueden ir aquí si los tienes
+        );
     }
 }

@@ -35,12 +35,26 @@ public class AuthController {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
             );
+try {
+    // Generación del token JWT
+    String token = jwtTokenUtil.generateToken(authentication);
+    System.out.println("datos tocken "+token);
+    return ResponseEntity.ok(new JwtResponse(token));
+	
+}catch (Exception e) {
+	// TODO: handle exception
+    System.out.println("datos tocken "+e.getMessage().toString());
+    System.out.println("datos tocken "+e.getStackTrace().toString());
 
-            // Generación del token JWT
-            String token = jwtTokenUtil.generateToken(authentication);
-            return ResponseEntity.ok(new JwtResponse(token));
+}
+
+       
+    
+        	
+        	
         } catch (BadCredentialsException e) {
             throw new Exception("Invalid username or password", e);
         }
+		return null;
     }
 }
