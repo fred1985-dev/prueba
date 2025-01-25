@@ -1,48 +1,46 @@
 package com.prueba.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.prueba.auth.JwtTokenProvider;
+import com.prueba.auth.JwtTokenUtil;
+import com.prueba.model.JwtResponse;
 import com.prueba.model.LoginRequest;
 import com.prueba.model.Users;
-import com.prueba.model.JwtResponse;
-import com.prueba.service.UserService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.*;
-
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private final JwtTokenProvider jwtTokenProvider;
-    private final UserService usuarioService;
-    private final BCryptPasswordEncoder passwordEncoder;
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
-    public AuthController(JwtTokenProvider jwtTokenProvider, UserService usuarioService, BCryptPasswordEncoder passwordEncoder) {
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.usuarioService = usuarioService;
-        this.passwordEncoder = passwordEncoder;
-    }
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticate(@RequestBody LoginRequest loginRequest) {
-        Users user = usuarioService.findByEmail(loginRequest.getEmail());  // Cambiar el tipo a Users
-        
-        // Verificar si el usuario existe y si la contraseña es válida
-        if (user != null && passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-        	String role = user.getRoles().stream()
-                    .findFirst()  // Obtiene el primer rol (si existe)
-                    .map(r -> r.getRole().getName())  // Cambié el parámetro a 'r' para evitar el conflicto
-                    .orElse("ROLE_USER");
-            // Generamos el token con la información del usuario
-            String token = jwtTokenProvider.generateToken(user.getUsername());  // Llamada al método getUsername()
-            
-            // Retornar el token en la respuesta
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) throws Exception {
+    	
+    	System.out.println("datos del login"+loginRequest.getEmail());
+        try {
+            // Autenticación de usuario usando el AuthenticationManager
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
+            );
+
+            // Generación del token JWT
+            String token = jwtTokenUtil.generateToken(authentication);
             return ResponseEntity.ok(new JwtResponse(token));
-        } else {
-            // Retornar error de autenticación si el usuario no existe o la contraseña es incorrecta
-            return ResponseEntity.status(401).body("Unauthorized: Invalid email or password");
+        } catch (BadCredentialsException e) {
+            throw new Exception("Invalid username or password", e);
         }
     }
-
-
 }

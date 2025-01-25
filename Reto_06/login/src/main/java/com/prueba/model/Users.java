@@ -36,7 +36,6 @@ public class Users implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO, generator="native")
-	//@GenericGenerator(name="native",strategy="native")
 	@SequenceGenerator(name="s_user", sequenceName="s_user",allocationSize=1)
 	private Long id_user;
 	
@@ -182,6 +181,11 @@ public class Users implements Serializable {
 		return "User [id=" + id_user + ", firstName=" + firstname + ", lastName=" + lastname + ", email=" + email
 				+ ", username=" + username + ", password=" + password + ", confirmPassword=" + confirmPassword
 				+ ", roles=" + roles+  ", activo="+activo+ "]";
+	}
+
+	public Users orElseThrow(Object object) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

@@ -7,14 +7,12 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-
+@SpringBootApplication(scanBasePackages = { "com.*"})
 @EnableAutoConfiguration(exclude = {ErrorMvcAutoConfiguration.class})
-//@SpringBootApplication(scanBasePackages = { "com.*"})
-@SpringBootApplication(scanBasePackages = "com.prueba")
-//@ComponentScan(basePackages = "com.prueba.auth")  
 @EntityScan("com.prueba.model") 
-@ComponentScan(basePackages = {"com.prueba.service","com.prue"})
+@ComponentScan(basePackages = {"com.prueba.service"})
 @EnableJpaRepositories("com.prueba.repository")
+@ComponentScan(basePackages = {"com.prueba", "com.prueba.auth", "com.prueba.service"})
 public class PruebaApplication {
 
 	public static void main(String[] args) {
