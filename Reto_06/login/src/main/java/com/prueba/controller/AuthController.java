@@ -1,21 +1,31 @@
 package com.prueba.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
+
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.prueba.auth.JwtTokenProvider;
 import com.prueba.auth.JwtTokenUtil;
 import com.prueba.model.JwtResponse;
 import com.prueba.model.LoginRequest;
-import com.prueba.model.Users;
+import com.prueba.util.ConstantesRolesMP;
+
+
+@CrossOrigin(origins = ConstantesRolesMP.DIRECCION_IP, maxAge = 3600, methods = { RequestMethod.GET, RequestMethod.POST,
+		RequestMethod.DELETE, RequestMethod.PUT }, allowedHeaders = "*")
+
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {

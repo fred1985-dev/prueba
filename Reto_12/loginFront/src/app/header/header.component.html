@@ -1,0 +1,60 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark"  *ngIf="authService.isAuthenticated()">
+  <div class="container-fluid">
+    <a class="navbar-brand text-white" href="#">{{ title }}</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"  *ngIf="!authService.isAuthenticated()">
+          <a class="nav-link" aria-current="page" routerLink="/" routerLinkActive="active">Home</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/propietario" routerLinkActive="active">
+            <mat-icon color="primary">group</mat-icon> Propietario
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/vehiculo" routerLinkActive="active">
+            <mat-icon color="primary">two_wheeler</mat-icon> Vehículo
+          </a>
+        </li>
+
+        <!-- Gestión Mantenimiento -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="maintenanceDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Gestión Mantenimiento
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="maintenanceDropdown">
+            <li><a class="dropdown-item" routerLink="/mantenimiento" routerLinkActive="active">Mantenimiento</a></li>
+            <li><a class="dropdown-item" routerLink="/servicios" routerLinkActive="active">Servicios</a></li>
+            <li><a class="dropdown-item" routerLink="/factura-mantenimiento" routerLinkActive="active">Factura Mantenimiento</a></li>
+          </ul>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/administracion" routerLinkActive="active">
+            <mat-icon color="primary">settings</mat-icon> Administración
+          </a>
+        </li>
+
+        <ng-container *ngIf="authService.isAuthenticated()">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              {{ authService.usuario.username }}
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" (click)="logout()">Cerrar Sesión</a></li>
+            </ul>
+          </li>
+        </ng-container>
+        <ng-container *ngIf="!authService.isAuthenticated()">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/login">Login</a>
+          </li>
+        </ng-container>
+      </ul>
+    </div>
+  </div>
+</nav>

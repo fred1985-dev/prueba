@@ -1,0 +1,22 @@
+.container {
+  display: flex; /* Use flexbox to arrange children */
+  flex-direction: column; /* Stack children vertically */
+  justify-content: center; /* Center children vertically */
+  align-items: center; /* Center children horizontally */
+  height: 100%; /* Full height of the viewport */
+ /* background: url('./img/2.jpg') no-repeat center center fixed;*/
+  background-size: cover;
+}
+
+/* Add a class for the image if not already present */
+.image {
+  max-width: 100%; /* Ensure it doesn't overflow */
+  margin-bottom: 20px; /* Space between image and form */
+}
+
+/* Ensure .card is not taking full width if not desired */
+.card {
+  width: auto; /* Or set a specific max-width */
+  margin:  auto; /* Center in the available space */
+  /* Rest of your styles... */
+}

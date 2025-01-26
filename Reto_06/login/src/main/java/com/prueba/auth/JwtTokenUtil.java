@@ -2,25 +2,26 @@ package com.prueba.auth;
 
 import java.security.Principal;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
+
 import com.prueba.model.Users;
 import com.prueba.service.IUsuarioService;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
-
-
+import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.UnsupportedJwtException;
 
 @Component
 public class JwtTokenUtil {
 
-
-	
-	
     @Autowired
     private IUsuarioService usuarioService;
 
@@ -51,20 +52,67 @@ public class JwtTokenUtil {
     		"LbwCiTtzS6oxWfY2yOA6eICTX2Eiu5a5MP/uShsBCKRR2dGuqxD3K3TmiWielY34\r\n" + 
     		"+E+YwC7OKZiSJ97cePVhMbTt5RrIkXSuQbjWAdZkC5BAUJEWTpvl\r\n" + 
     		"-----END RSA PRIVATE KEY-----";
+    
+    
+    
+    
+    // Método para validar si el token es válido
+    public boolean validateToken(String token) {
+        try {
+            // Verificar si el token ha expirado
+            return !isTokenExpired(token);
+        } catch (SignatureException | MalformedJwtException | UnsupportedJwtException e) {
+            // Firma inválida o token mal formado
+            return false;
+        } catch (ExpiredJwtException e) {
+            // El token ha expirado
+            return false;
+        }
+    }
+    
+    public Claims getClaimsFromToken(String token) {
+        return Jwts.parser()
+                .setSigningKey(jwtSecret)
+                .parseClaimsJws(token)
+                .getBody();
+    }
+    public Date getExpirationDateFromToken(String token) {
+        Claims claims = getClaimsFromToken(token);
+        return claims.getExpiration();
+    }
 
+    public String getUsernameFromToken(String token) {
+        Claims claims = getClaimsFromToken(token);
+        return claims.getSubject();
+    }
+    
+    
     public String generateToken(Principal authentication) {
         // Usa authentication.getName() para obtener el email, ya que autenticamos por email
         Users usuario1 = (Users) usuarioService.findByEmail(authentication.getName());  // Cambiar findByUsername por findByEmail
-        System.out.println(usuario1.getUsername());
-   
-        
+
+        Map<String, Object> additionalInfo = new HashMap<>();
+        additionalInfo.put("nombre", usuario1.getLastname());
+        additionalInfo.put("apellido", usuario1.getFirstname());
+        additionalInfo.put("email", usuario1.getEmail());
+        additionalInfo.put("id_user", usuario1.getId_user());
+        additionalInfo.put("info_adicional", "Hola que tal!: ".concat(authentication.getName()));
+System.out.println("--------------"+additionalInfo);
         return Jwts.builder()
                 .setSubject(usuario1.getEmail()) // Usamos el email como subject
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 3600 * 1000)) // Expiración en 1 hora
+                .addClaims(additionalInfo)  // Agregamos los datos adicionales al payload
                 .signWith(SignatureAlgorithm.RS256, jwtSecret) // Firmar con la clave privada
                 .compact();
     }
+    
 
+    // Verificar si el token ha expirado
+    private boolean isTokenExpired(String token) {
+        Date expirationDate = getExpirationDateFromToken(token);
+        return expirationDate.before(new Date());
+
+    }
     // Otros métodos para validar y obtener información del token...
 }

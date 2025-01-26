@@ -1,0 +1,88 @@
+
+
+<div class="card border-primary mb-3">
+  <div class="card-body text-primary">
+    <h3 class="card-title">Lista Formularios Creados</h3>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-2">
+          <div class="my-2" >
+            <button
+              type="button"
+              routerLink="/propietario/form"
+              class="btn btn-rounded btn-primary btn-sm"
+            >
+              Crear Formulario Nuevo
+            </button>
+          </div>
+
+        </div>
+        
+      </div>
+    </div>
+
+    <div *ngIf="comercianteList.length <= 0" class="alert alert-danger">
+      No hay registros en la base de datos.
+    </div>
+    <div  *ngIf="comercianteList.length >=1">
+      <paginator-nav *ngIf="paginador" [paginador]="paginador" ></paginator-nav>
+
+    </div>
+    <table
+      class="table table-bordered table-striped"
+      *ngIf="comercianteList.length > 0"
+    >
+      <thead>
+        <tr>
+          <th>Razon Social</th>
+          <th>Teléfono</th>
+          <th>Correo Electrónico</th>
+          <th>Fecha registro</th>
+          <th>No Establecimiento</th>
+          <th >Estado</th>
+          <th >Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of comercianteList">
+          <td>
+       
+            item
+          </td>
+          <td>{{ item.razonSocial }}</td>
+          <td>{{ item.telefono }}</td>
+          <td>{{ item.correoElectronico | uppercase }}</td>
+          <td>{{ item.fechaRegistro | date : "M/dd/yyyy" }}</td>
+          <td>{{ item.cantidadEstablecimientos }}</td>
+
+          <td>{{ item.estado}}</td>          
+
+          <td >
+            <button
+              mat-mini-fab
+              type="button"
+              [routerLink]="['/comerciante/form', item.comerciante_id]"
+              class="btn btn-primary"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+          </td>
+          <td >
+            <button
+              mat-mini-fab
+              type="button"
+              color="warn"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div  *ngIf="comercianteList.length >=1">
+      <paginator-nav *ngIf="paginador" [paginador]="paginador"></paginator-nav>
+    </div>
+
+  </div>
+</div>

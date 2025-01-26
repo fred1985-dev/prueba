@@ -1,0 +1,29 @@
+.navbar-nav .nav-link mat-icon {
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
+.nav-item .dropdown-menu {
+  background-color: #343a40;
+  border-radius: 5px;
+}
+
+.dropdown-menu .dropdown-item {
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+.dropdown-menu .dropdown-item:hover {
+  background-color: #495057;
+}
+
+.mat-chip {
+  background-color: #f5f5f5;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.mat-chip:hover {
+  background-color: #e0e0e0;
+  cursor: pointer;
+}
