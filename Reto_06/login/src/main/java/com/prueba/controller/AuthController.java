@@ -48,13 +48,13 @@ public class AuthController {
 try {
     // Generación del token JWT
     String token = jwtTokenUtil.generateToken(authentication);
-    System.out.println("datos tocken "+token);
+    System.out.println("datos tocken.. "+token);
     return ResponseEntity.ok(new JwtResponse(token));
 	
 }catch (Exception e) {
 	// TODO: handle exception
-    System.out.println("datos tocken "+e.getMessage().toString());
-    System.out.println("datos tocken "+e.getStackTrace().toString());
+    System.out.println(" "+e.getMessage().toString());
+    System.out.println(" "+e.getStackTrace().toString());
 
 }
 

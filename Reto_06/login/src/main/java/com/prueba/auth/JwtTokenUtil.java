@@ -25,7 +25,7 @@ public class JwtTokenUtil {
     @Autowired
     private IUsuarioService usuarioService;
 
-    private String jwtSecret = "-----BEGIN RSA PRIVATE KEY-----\r\n" + 
+    private String jwtSecret = "\r\n" + 
     		"MIIEowIBAAKCAQEAwRRkppjNSOZkENkh8/JNk7vjVq1J7jRWT89ZrgOYbS7BkKDX\r\n" + 
     		"YYo3ylxi/Z7aQE5SYP1RIuz0Iw8ZuCsPr4Sh4nbkbWIPnthTB0ZWizmQCC2La81H\r\n" + 
     		"U78zMCw0AetdGVU0+P0LAh+9lZAdXiZiTqFviNbOj/pfJqyPz6r9/7/HUDVuxpeO\r\n" + 
@@ -50,8 +50,7 @@ public class JwtTokenUtil {
     		"oWB/VvFjwm133VpS1NpmC2k6G1BEWZ2rJoM9DQxyuUKHWYnR1Z8yN62Ire3FSaML\r\n" + 
     		"SILzZQKBgFzwPCDsrBbNi2I0zzSuPptinosyEMwp4Fx/V0JpOMcB37k2wEbpN7v5\r\n" + 
     		"LbwCiTtzS6oxWfY2yOA6eICTX2Eiu5a5MP/uShsBCKRR2dGuqxD3K3TmiWielY34\r\n" + 
-    		"+E+YwC7OKZiSJ97cePVhMbTt5RrIkXSuQbjWAdZkC5BAUJEWTpvl\r\n" + 
-    		"-----END RSA PRIVATE KEY-----";
+    		"+E+YwC7OKZiSJ97cePVhMbTt5RrIkXSuQbjWAdZkC5BAUJEWTpvl\r\n";
     
     
     
@@ -91,23 +90,29 @@ public class JwtTokenUtil {
         // Usa authentication.getName() para obtener el email, ya que autenticamos por email
         Users usuario1 = (Users) usuarioService.findByEmail(authentication.getName());  // Cambiar findByUsername por findByEmail
 
+        // Limpiar el jwtSecret para evitar espacios no deseados
+        jwtSecret = jwtSecret.trim();
+        jwtSecret = jwtSecret.replaceAll("[\\n\\r]", "").trim();
+
         Map<String, Object> additionalInfo = new HashMap<>();
         additionalInfo.put("nombre", usuario1.getLastname());
         additionalInfo.put("apellido", usuario1.getFirstname());
         additionalInfo.put("email", usuario1.getEmail());
         additionalInfo.put("id_user", usuario1.getId_user());
         additionalInfo.put("info_adicional", "Hola que tal!: ".concat(authentication.getName()));
-System.out.println("--------------"+additionalInfo);
+        System.out.println("--------------" + additionalInfo);
+
         return Jwts.builder()
                 .setSubject(usuario1.getEmail()) // Usamos el email como subject
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 3600 * 1000)) // Expiración en 1 hora
                 .addClaims(additionalInfo)  // Agregamos los datos adicionales al payload
-                .signWith(SignatureAlgorithm.RS256, jwtSecret) // Firmar con la clave privada
+                .signWith(SignatureAlgorithm.HS256, jwtSecret) // Firmar con la clave secreta (simétrica)
                 .compact();
     }
-    
 
+    
+    
     // Verificar si el token ha expirado
     private boolean isTokenExpired(String token) {
         Date expirationDate = getExpirationDateFromToken(token);
