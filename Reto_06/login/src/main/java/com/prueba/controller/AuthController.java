@@ -1,9 +1,10 @@
 package com.prueba.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
-
-
-
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -21,50 +22,53 @@ import com.prueba.model.JwtResponse;
 import com.prueba.model.LoginRequest;
 import com.prueba.util.ConstantesRolesMP;
 
-
 @CrossOrigin(origins = ConstantesRolesMP.DIRECCION_IP, maxAge = 3600, methods = { RequestMethod.GET, RequestMethod.POST,
 		RequestMethod.DELETE, RequestMethod.PUT }, allowedHeaders = "*")
-
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+	@Autowired
+	private AuthenticationManager authenticationManager;
 
-    @Autowired
-    private JwtTokenUtil jwtTokenUtil;
+	@Autowired
+	private JwtTokenUtil jwtTokenUtil;
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) throws Exception {
-    	
-    	System.out.println("datos del login"+loginRequest.getEmail());
-        try {
-            // Autenticación de usuario usando el AuthenticationManager
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
-            );
-try {
-    // Generación del token JWT
-    String token = jwtTokenUtil.generateToken(authentication);
-    System.out.println("datos tocken.. "+token);
-    return ResponseEntity.ok(new JwtResponse(token));
-	
-}catch (Exception e) {
-	// TODO: handle exception
-    System.out.println(" "+e.getMessage().toString());
-    System.out.println(" "+e.getStackTrace().toString());
+	@PostMapping("/login")
+	public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+	    System.out.println("Email recibido: " + loginRequest.getEmail());
+	    System.out.println("Password recibido: " + loginRequest.getPassword());
+	    try {
+	        // Autenticación del usuario
+	        Authentication authentication = authenticationManager.authenticate(
+	                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
-}
+	        System.out.print(authentication);
+	        // Generación del token JWT
+	        String token = jwtTokenUtil.generateToken(authentication);
 
-       
-    
-        	
-        	
-        } catch (BadCredentialsException e) {
-            throw new Exception("Invalid username or password", e);
-        }
-		return null;
-    }
+	        // Crear la respuesta con el token
+	        Map<String, Object> response = new HashMap<>();
+	        response.put("informacion", authentication);
+	       
+	        response.put("access_token", token);
+
+	        return ResponseEntity.ok(response);
+	        
+	        
+	        
+	        
+	    } catch (BadCredentialsException e) {
+	        // Manejo de credenciales inválidas
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario o contraseña incorrectos.");
+	    } catch (Exception e) {
+	        // Manejo de otros errores
+	        System.err.println("Error en el login: " + e.getMessage());
+	        e.printStackTrace();
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                .body("Ocurrió un error al procesar la solicitud.");
+	    }
+	}
+
 }

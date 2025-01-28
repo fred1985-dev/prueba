@@ -54,17 +54,26 @@ public get token(): string {
   login(usuario: Usuario): Observable<any> {
     const urlEndpoint = CONSTANTS.urlTocken;
      // encriptanmos la contraseña de la aplicaicon
-    const credenciales = btoa('angularapp' + ':' + '12345');
-    const httpHeaders = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': 'Basic ' + credenciales
-    });
+     const credenciales = btoa('angularapp' + ':' + '12345');
+  
+     const httpHeaders = new HttpHeaders({
+       'Content-Type': 'application/json',
+      // 'Authorization': 'Basic ' + credenciales
+     });
+
+     const body = {
+      email: usuario.email,
+      password: usuario.password,
+    };
+  
+
+    console.log("-----------------------"+usuario.email);
     let params = new URLSearchParams();
     params.set('grant_type', 'password');
     params.set('email', usuario.email);
     params.set('password', usuario.password);
     console.log(params.toString());
-    return this.http.post<any>(urlEndpoint, params.toString(), { headers: httpHeaders });
+    return this.http.post<any>(urlEndpoint, body, { headers: httpHeaders });
   }
 
 

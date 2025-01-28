@@ -30,14 +30,19 @@ export class LoginComponent implements OnInit {
 
 
   login(): void{
-    console.log(this.usuario);
+    console.log("datos usuario"+this.usuario);
+    console.log(this.usuario.email);
+    console.log(this.usuario.password);
     if (this.usuario.email === '' || this.usuario.password === '') {
       Swal.fire('Error Login', 'email o password vacías!', 'error');
       return;
     }
 
      this.authService.login(this.usuario).subscribe(response =>{
-      console.log("response-.."+response)
+
+
+      console.log("response-.."+  (response) )
+      console.log("response-.."+  JSON.stringify(response) )
       //console.log(response.access_token.split(".")[1])
       this.authService.guardarUsuario(response.access_token);
       this.authService.guardarToken(response.access_token);

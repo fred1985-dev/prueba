@@ -88,22 +88,24 @@ public class JwtTokenUtil {
     
     public String generateToken(Principal authentication) {
         // Usa authentication.getName() para obtener el email, ya que autenticamos por email
-        Users usuario1 = (Users) usuarioService.findByEmail(authentication.getName());  // Cambiar findByUsername por findByEmail
-
+        Users usuario1 = (Users) usuarioService.findByEmailDOs(authentication.getName());  // Cambiar findByUsername por findByEmail
+        Users  usuario = usuarioService.findByUsername(usuario1.getUsername());
+      
         // Limpiar el jwtSecret para evitar espacios no deseados
         jwtSecret = jwtSecret.trim();
         jwtSecret = jwtSecret.replaceAll("[\\n\\r]", "").trim();
-
         Map<String, Object> additionalInfo = new HashMap<>();
-        additionalInfo.put("nombre", usuario1.getLastname());
-        additionalInfo.put("apellido", usuario1.getFirstname());
-        additionalInfo.put("email", usuario1.getEmail());
-        additionalInfo.put("id_user", usuario1.getId_user());
+        additionalInfo.put("nombre", usuario.getLastname());
+        additionalInfo.put("apellido", usuario.getFirstname());
+        additionalInfo.put("email", usuario.getEmail());
+        additionalInfo.put("id_user", usuario.getId_user());
+  
+
         additionalInfo.put("info_adicional", "Hola que tal!: ".concat(authentication.getName()));
         System.out.println("--------------" + additionalInfo);
 
         return Jwts.builder()
-                .setSubject(usuario1.getEmail()) // Usamos el email como subject
+                .setSubject(usuario.getEmail()) // Usamos el email como subject
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 3600 * 1000)) // Expiración en 1 hora
                 .addClaims(additionalInfo)  // Agregamos los datos adicionales al payload
