@@ -38,25 +38,28 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-     this.authService.login(this.usuario).subscribe(response =>{
-
-
-      console.log("response-.."+  (response) )
-      console.log("response-.."+  JSON.stringify(response) )
-      //console.log(response.access_token.split(".")[1])
-      this.authService.guardarUsuario(response.access_token);
-      this.authService.guardarToken(response.access_token);
-      let usuario = this.authService.usuario;
-      this.router.navigate(['/comerciante'])
-       Swal.fire('Login', `Hola ${usuario.username} ya estás autenticado!`, 'success');
-
-     }, err => {
-      if (err.status == 400) {
-        Swal.fire('Error Login', 'email o clave incorrectas!', 'error');
+    this.authService.login(this.usuario).subscribe(response => {
+      console.log("Respuesta completa:", response); // Muestra toda la respuesta para ver la estructura
+      console.log("Token:", response.access_token);
+      console.log("Información:", response.informacion);
+    
+      // Asegúrate de que la propiedad `username` esté en la respuesta
+      let username = response.informacion?.principal?.username;
+      console.log("Username:", username); // Verifica si username tiene el valor correcto
+    
+      if (username) {
+        // Guardar el token y redirigir solo si el username está disponible
+        this.authService.guardarToken(response.access_token);
+        this.router.navigate(['/comerciante']);
+        Swal.fire('Login', `Hola ${username}, ya estás autenticado!`, 'success');
+      } else {
+        // En caso de que el username no esté disponible
+        Swal.fire('Error Login', 'No se encontró el usuario!', 'error');
       }
-    }
-
-
-     )
-  }
+    }, err => {
+      if (err.status == 400) {
+        Swal.fire('Error Login', 'Email o clave incorrectas!', 'error');
+      }
+    });
+  }    
 }

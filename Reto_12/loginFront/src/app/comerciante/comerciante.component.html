@@ -10,7 +10,7 @@
           <div class="my-2" >
             <button
               type="button"
-              routerLink="/propietario/form"
+              routerLink="/comerciante/form"
               class="btn btn-rounded btn-primary btn-sm"
             >
               Crear Formulario Nuevo
@@ -25,13 +25,13 @@
     <div *ngIf="comercianteList.length <= 0" class="alert alert-danger">
       No hay registros en la base de datos.
     </div>
-    <div  *ngIf="comercianteList.length >=1">
+    <div  *ngIf="comercianteList.length >=0">
       <paginator-nav *ngIf="paginador" [paginador]="paginador" ></paginator-nav>
 
     </div>
     <table
       class="table table-bordered table-striped"
-      *ngIf="comercianteList.length > 0"
+      *ngIf="comercianteList.length >= 0"
     >
       <thead>
         <tr>

@@ -57,7 +57,7 @@ public get token(): string {
      const credenciales = btoa('angularapp' + ':' + '12345');
   
      const httpHeaders = new HttpHeaders({
-       'Content-Type': 'application/json',
+       'Content-Type': 'application/json'
       // 'Authorization': 'Basic ' + credenciales
      });
 

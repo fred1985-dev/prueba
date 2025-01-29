@@ -90,7 +90,7 @@ public class JwtTokenUtil {
         // Usa authentication.getName() para obtener el email, ya que autenticamos por email
         Users usuario1 = (Users) usuarioService.findByEmailDOs(authentication.getName());  // Cambiar findByUsername por findByEmail
         Users  usuario = usuarioService.findByUsername(usuario1.getUsername());
-      
+    
         // Limpiar el jwtSecret para evitar espacios no deseados
         jwtSecret = jwtSecret.trim();
         jwtSecret = jwtSecret.replaceAll("[\\n\\r]", "").trim();
@@ -99,8 +99,8 @@ public class JwtTokenUtil {
         additionalInfo.put("apellido", usuario.getFirstname());
         additionalInfo.put("email", usuario.getEmail());
         additionalInfo.put("id_user", usuario.getId_user());
-  
-
+        additionalInfo.put("roles",  usuario.getRoles().get(0).getRole().getName());
+    
         additionalInfo.put("info_adicional", "Hola que tal!: ".concat(authentication.getName()));
         System.out.println("--------------" + additionalInfo);
 
