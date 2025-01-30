@@ -19,13 +19,13 @@
   </li>
 
   <li ngClass="paginador.last?'disabled  page-item': 'page-item'" >
-    <a class="page-link" [routerLink]= "['/comerciantelist/page',paginador.totalPages-1 ]">Último  </a>
+    <a class="page-link" [routerLink]= "['/comerciante/list/page',paginador.totalPages-1 ]">Último  </a>
 
   </li>
 
 <!--boton >> -->
   <li class="page-item" *ngIf="paginador.number < paginador.totalPages - 1">
-  <a class="page-link" [routerLink]= "['/propietario/list/page',paginador.number +1 ]"> &raquo; </a>
+  <a class="page-link" [routerLink]= "['/comerciante/list/page',paginador.number +1 ]"> &raquo; </a>
   </li>
 
 </ul>

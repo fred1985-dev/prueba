@@ -1,5 +1,7 @@
 package com.prueba.auth;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -10,14 +12,17 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.prueba.service.UserDetailsServiceImpl;
 
 import jakarta.servlet.http.HttpServletResponse;
+
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SpringSecurityConfig {
+public class SpringSecurityConfig implements WebMvcConfigurer {
 
     private final UserDetailsService userDetailsService;
 
@@ -25,23 +30,32 @@ public class SpringSecurityConfig {
         this.userDetailsService = userDetailsServiceImpl;
     }
 
-
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")  // Permitir CORS para todas las rutas
+            .allowedOrigins("http://localhost:4200")  // URL del frontend
+            .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")  // Métodos permitidos
+            .allowedHeaders("*")  // Permitir todos los encabezados
+            .allowCredentials(true);  // Permitir credenciales
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable()) // Desactivar CSRF para APIs REST
+            .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/login", "/api/auth/register").permitAll() // Permitir acceso al login y registro
-                .anyRequest().authenticated() // Bloquear cualquier otro acceso no autenticado
+                .requestMatchers("/api/auth/login", "/api/auth/register","/api/comerciantes/getListComerciantePage/**").permitAll()
+                .anyRequest().authenticated()
             )
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Política sin estado (JWT)
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .exceptionHandling(exception -> exception
-                .authenticationEntryPoint((request, response, authException) -> 
-                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized")
-                )
+                .authenticationEntryPoint((request, response, authException) -> {
+                    System.out.println("Solicitud bloqueada por falta de autenticación: " + request.getRequestURI());
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+                })
             );
 
         return http.build();
     }
+
 }

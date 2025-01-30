@@ -22,6 +22,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins("http://localhost:4200") // Cambia por tu URL de frontend si es necesario
                 .allowedMethods("GET", "POST", "PUT", "DELETE") // Métodos permitidos
                 .allowedHeaders("*") // Permitir cualquier cabecera
+               // .allowedHeaders("Content-Type", "Authorization", "X-Requested-With", "Accept")  
                 .allowCredentials(true); // Permite el envío de credenciales (si es necesario)
     }
     

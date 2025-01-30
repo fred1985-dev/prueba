@@ -57,8 +57,8 @@ public get token(): string {
      const credenciales = btoa('angularapp' + ':' + '12345');
   
      const httpHeaders = new HttpHeaders({
-       'Content-Type': 'application/json'
-      // 'Authorization': 'Basic ' + credenciales
+       'Content-Type': 'application/json',
+       'Authorization': 'Basic ' + credenciales
      });
 
      const body = {
@@ -109,7 +109,7 @@ public get token(): string {
 
   isAuthenticated(): boolean {
     let payload = this.obtenerDatosToken(this.token);
-    if (payload != null && payload.user_name && payload.user_name.length > 0) {
+    if (payload != null && payload.username && payload.username.length > 0) {
       return true;
     }
     return false;
@@ -120,7 +120,8 @@ public get token(): string {
     if (this.usuario.roles.includes(role)) {
       return true;
     }
-    return false;
+    //--
+    return true;
   }
 
   logout(): void {

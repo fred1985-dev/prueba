@@ -17,6 +17,10 @@ import { FooterComponent } from './footer/footer.component';
 import { HeaderComponent } from './header/header.component';
 import { ComercianteComponent } from './comerciante/comerciante.component';
 
+//Sdrvicios
+import { ComercianteService } from './comerciante/comerciante.service';
+
+
 //importar http
 import {HttpClientModule} from '@angular/common/http';
 
@@ -84,7 +88,6 @@ const routes: Routes =[
   { path: 'administracion', component: AdministracionComponent, canActivate: [AuthGuard, RoleGuard], data: { role: 'ADMIN' } },
   { path: 'roles', component: RolComponent, canActivate: [AuthGuard, RoleGuard], data: { role: 'ADMIN' } },
   {path:'login', component: LoginComponent},
-  {path:'comerciante/list/page/:page', component: ComercianteComponent},
   { path: 'users', component: UsersComponent, canActivate: [AuthGuard, RoleGuard], data: { role: 'ADMIN' } }
 ]
 
@@ -192,7 +195,10 @@ const routes: Routes =[
     PortalModule,
     ScrollingModule
   ],
-  providers: [],
+  providers: [
+    ComercianteService
+
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

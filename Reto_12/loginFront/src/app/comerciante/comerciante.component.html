@@ -35,21 +35,19 @@
     >
       <thead>
         <tr>
+       
           <th>Razon Social</th>
           <th>Teléfono</th>
           <th>Correo Electrónico</th>
           <th>Fecha registro</th>
           <th>No Establecimiento</th>
           <th >Estado</th>
-          <th >Acciones</th>
+        <th colspan="2">Acciones</th> 
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let item of comercianteList">
-          <td>
        
-            item
-          </td>
           <td>{{ item.razonSocial }}</td>
           <td>{{ item.telefono }}</td>
           <td>{{ item.correoElectronico | uppercase }}</td>
