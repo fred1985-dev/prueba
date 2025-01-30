@@ -9,7 +9,7 @@ import { AuthService } from '../usuarioo/auth.service';
   styleUrls: ['./header-standalone/./header-standalone.component.css'],
 })
 export class HeaderComponent{
-  title: string ='AutoServic'
+  title: string ='pruebaPratica'
 
   constructor(private router: Router, public authService: AuthService) {
 

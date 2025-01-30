@@ -3,7 +3,9 @@ package com.prueba.auth;
 import java.security.Principal;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -94,13 +96,17 @@ public class JwtTokenUtil {
         // Limpiar el jwtSecret para evitar espacios no deseados
         jwtSecret = jwtSecret.trim();
         jwtSecret = jwtSecret.replaceAll("[\\n\\r]", "").trim();
+        
+        List<String> roles = usuario.getRoles().stream()
+        	    .map(role -> role.getRole().getName())
+        	    .collect(Collectors.toList());
+        
         Map<String, Object> additionalInfo = new HashMap<>();
         additionalInfo.put("nombre", usuario.getLastname());
         additionalInfo.put("apellido", usuario.getFirstname());
         additionalInfo.put("email", usuario.getEmail());
         additionalInfo.put("id_user", usuario.getId_user());
-        additionalInfo.put("roles",  usuario.getRoles().get(0).getRole().getName());
-    
+        additionalInfo.put("roles", roles); 
         additionalInfo.put("info_adicional", "Hola que tal!: ".concat(authentication.getName()));
         System.out.println("--------------" + additionalInfo);
 

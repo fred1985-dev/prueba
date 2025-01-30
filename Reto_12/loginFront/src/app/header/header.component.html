@@ -29,19 +29,18 @@
       </ul>
 
       <!-- Información del usuario y rol alineado a la derecha -->
-      <div class="d-flex align-items-center">
+      <div class="d-flex align-items-center" *ngIf="authService.isAuthenticated()">
         <span class="navbar-text me-3">
-          Bienvenidos, {{ authService.usuario.username }} <br> Rol: 
+          Bienvenidos, {{ authService.usuario?.firstname }} <br> Rol: {{ authService.usuario?.roles?.join(', ') }}
         </span>
 
         <!-- Menú de usuario (Cerrar Sesión) -->
         <div class="dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            {{ authService.usuario.username }}
+            {{ authService.usuario?.firstname }}
           </a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" (click)="logout()">Cerrar Sesión</a></li>
-          </ul>
+        
+          <a class="dropdown-item" (click)="logout()">Cerrar Sesión</a>
         </div>
       </div>
     </div>

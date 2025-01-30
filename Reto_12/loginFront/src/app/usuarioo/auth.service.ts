@@ -3,7 +3,8 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Usuario } from './Usuario'
 import { CONSTANTS } from '../Util/Constantes';
-
+import {jwtDecode} from 'jwt-decode';
+import { tap } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
@@ -51,47 +52,48 @@ public get token(): string {
 
 
 
-  login(usuario: Usuario): Observable<any> {
-    const urlEndpoint = CONSTANTS.urlTocken;
-     // encriptanmos la contraseña de la aplicaicon
-     const credenciales = btoa('angularapp' + ':' + '12345');
-  
-     const httpHeaders = new HttpHeaders({
-       'Content-Type': 'application/json',
-       'Authorization': 'Basic ' + credenciales
-     });
+login(usuario: Usuario): Observable<any> {
+  const urlEndpoint = CONSTANTS.urlTocken;
+  const credenciales = btoa('angularapp' + ':' + '12345');
+  const httpHeaders = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Basic ' + credenciales
+  });
 
-     const body = {
+  const body = {
       email: usuario.email,
       password: usuario.password,
-    };
-  
+  };
 
-    console.log("-----------------------"+usuario.email);
-    let params = new URLSearchParams();
-    params.set('grant_type', 'password');
-    params.set('email', usuario.email);
-    params.set('password', usuario.password);
-    console.log(params.toString());
-    return this.http.post<any>(urlEndpoint, body, { headers: httpHeaders });
-  }
+  console.log("-----------------------" + usuario.email);
+  return this.http.post<any>(urlEndpoint, body, { headers: httpHeaders }).pipe(
+      tap(response => {
+          console.log("Token recibido:", response.access_token);
+          this.guardarUsuario(response.access_token);  // Guardar los datos del usuario
+          this.guardarToken(response.access_token);   // Guardar el token
+      })
+  );
+}
 
 
-   guardarUsuario(accessToken: string): void {
-    let payload = this.obtenerDatosToken(accessToken);
-    this._usuario = new Usuario();
-    this._usuario.firstname= payload.nombre;
-    this._usuario.lastname= payload.apellido;
-    this._usuario.email = payload.email;
-    this._usuario.username = payload.username;
-    this._usuario.id_user =payload.id_user;
-    
-    console.log(" ser_name; "+ payload.username+ "  iduser "+ payload.id_user)
-    //spring lo llama authorities nosotros  lo guardamos roles
-    this._usuario.roles = payload.authorities;
-    //sessionStorage es de java scrpt nos permite guardar datos session
-    sessionStorage.setItem('usuario', JSON.stringify(this._usuario));
-  }
+
+guardarUsuario(accessToken: string): void {
+  const decodedToken: any = jwtDecode(accessToken);
+  console.log("Decoded Token:", decodedToken);  // Verifica que el token está decodificado correctamente
+  this._usuario = new Usuario();
+  this._usuario.firstname = decodedToken.nombre;
+  this._usuario.lastname = decodedToken.apellido;
+  this._usuario.email = decodedToken.email;
+  this._usuario.username = decodedToken.firstname;
+  this._usuario.id_user = decodedToken.id_user;
+  this._usuario.roles = decodedToken.roles;
+
+  console.log("Usuario Guardado:", this._usuario);  // Verifica que el usuario está siendo correctamente asignado
+
+  sessionStorage.setItem('usuario', JSON.stringify(this._usuario));
+}
+
+
 
   guardarToken(accessToken: string): void {
     this._token = accessToken;

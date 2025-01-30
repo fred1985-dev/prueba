@@ -85,8 +85,7 @@ import { PaginatorComponent } from './paginator/paginator.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 const routes: Routes =[
-  {path:'comerciante', component:ComercianteComponent},
-//  {path:'comerciante', component:ComercianteComponent, canActivate: [AuthGuard, RoleGuard],  data: { role: 'ADMIN' } },
+  {path:'comerciantes', component:ComercianteComponent, canActivate: [AuthGuard, RoleGuard],  data: { role: 'ADMIN' } },
 
   {path:'', redirectTo:'/login', pathMatch:'full'},
   { path: 'administracion', component: AdministracionComponent, canActivate: [AuthGuard, RoleGuard], data: { role: 'ADMIN' } },
