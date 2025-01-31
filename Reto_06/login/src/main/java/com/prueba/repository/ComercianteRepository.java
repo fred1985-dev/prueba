@@ -17,6 +17,16 @@ import com.prueba.dto.ComercianteDTO;
 @Component
 public class ComercianteRepository {
 
+    private final ComercianteRepositoryInter comercianteRepository;
+
+    @Autowired
+    public ComercianteRepository(ComercianteRepositoryInter comercianteRepository) {
+        this.comercianteRepository = comercianteRepository;
+    }
+
+	
+	
+	
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -48,4 +58,12 @@ public class ComercianteRepository {
             return comerciantes;
         });
     }
+
+	public void eliminarComerciante(Long comercianteId) {
+		// TODO Auto-generated method stub
+	//eliminarComerciante
+		comercianteRepository.eliminarComerciante(comercianteId);
+	}
+    
+    
 }

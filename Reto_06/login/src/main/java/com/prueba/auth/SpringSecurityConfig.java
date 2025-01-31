@@ -44,7 +44,9 @@ public class SpringSecurityConfig implements WebMvcConfigurer {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/login", "/api/auth/register","/api/comerciantes/getListComerciantePage/**").permitAll()
+                .requestMatchers("/api/auth/login", "/api/auth/register",
+                		        "/api/comerciantes/exportar",
+                		        "/api/comerciantes/getListComerciantePage/**").permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

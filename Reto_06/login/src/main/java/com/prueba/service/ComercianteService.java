@@ -6,19 +6,29 @@ import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
 
 import org.hibernate.dialect.OracleTypes;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.FluentQuery.FetchableFluentQuery;
 import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import com.prueba.dto.ComercianteDTO;
+import com.prueba.model.Comerciante;
 import com.prueba.repository.ComercianteRepository;
+import com.prueba.repository.ComercianteRepositoryInter;
 
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -43,20 +53,26 @@ public class ComercianteService implements ComercianteServiceIn {
             writer.println("Nombre|Departamento|Municipio|Teléfono|Correo Electrónico|Fecha de Registro|Estado|Cantidad de Establecimientos|Total Activos|Cantidad de Empleados");
 
             // Escribir datos
+         // Formato de fecha personalizado
+            SimpleDateFormat dateFormat = new SimpleDateFormat("M/dd/yyyy");
+
+            // Escribir datos
             for (ComercianteDTO comerciante : comerciantes) {
+                String fechaRegistro = comerciante.getFechaRegistro() != null ? dateFormat.format(comerciante.getFechaRegistro()) : "N/A";
                 writer.printf("%s|%s|%s|%s|%s|%s|%s|%d|%.2f|%d%n",
                     comerciante.getRazonSocial(),
                     comerciante.getDepartamento(),
                     comerciante.getMunicipio(),
                     comerciante.getTelefono(),
                     comerciante.getCorreoElectronico(),
-                    comerciante.getFechaRegistro().toString(),
-                    comerciante.getEstado(),
+                    fechaRegistro,  // Fecha formateada
+                    comerciante.getEstado() != null ? comerciante.getEstado() : "N/A",  // Verifica si es null
                     comerciante.getCantidadEstablecimientos(),
                     comerciante.getTotalActivos(),
                     comerciante.getCantidadEmpleados()
                 );
             }
+
         }
     }
 
@@ -118,5 +134,27 @@ public class ComercianteService implements ComercianteServiceIn {
 		    );
 		}
 
+	@Override
+	public void eliminarComerciante(Long comercianteId) {
+	    jdbcTemplate.execute(
+	        con -> {
+	            // Llamamos al procedimiento almacenado ELIMINAR_COMERCIANTE
+	            CallableStatement cs = con.prepareCall("{call PK_COMERCIANTE.ELIMINAR_COMERCIANTE(?)}");
+	            cs.setLong(1, comercianteId);  // Establecemos el ID del comerciante como parámetro
+	            return cs;
+	        },
+	        (CallableStatementCallback<Void>) cs -> {
+	            try {
+	                cs.execute();  // Ejecuta el procedimiento almacenado
+	                return null;   // No necesitamos un valor de retorno
+	            } catch (SQLException e) {
+	                throw new RuntimeException("Error al ejecutar el procedimiento de eliminación", e);
+	            }
+	        }
+	    );
+	}
+
+	
+	
 	}
 
